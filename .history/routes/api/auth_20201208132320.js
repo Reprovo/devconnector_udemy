@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 
@@ -21,14 +17,18 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route POST api/auth
-// @desc Authenticate user and get token
+// @route POST api/users
+// @desc Register user
 // @access Public
 router.post(
   '/',
   [
+    check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password is required').exists(),
+    check(
+      'password',
+      'Please enter a password with 6 or more characters'
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -36,23 +36,34 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     try {
       let user = await User.findOne({ email });
-      if (!user) {
+      if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const avatar = gravatar.url(email, {
+        s: '200',
+        r: 'pg',
+        d: 'mm',
+      });
 
-      if (!isMatch) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
-      }
+      user = new User({
+        name,
+        email,
+        avatar,
+        password,
+      });
+
+      const salt = await bcrypt.genSalt(10);
+
+      user.password = await bcrypt.hash(password, salt);
+
+      await user.save();
 
       const payload = {
         user: {
