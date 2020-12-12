@@ -39,7 +39,7 @@ const ProfileSchema = new mongoose.Schema({
         required: true,
       },
       location: {
-        type: String,
+        type: STring,
       },
       from: {
         type: Date,
@@ -109,5 +109,3 @@ const ProfileSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
-module.exports = Profile = mongoose.model('profile', ProfileSchema);
