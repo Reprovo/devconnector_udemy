@@ -42,7 +42,7 @@ export const Register = ({ setAlert, register }) => {
             name='name'
             value={name}
             onChange={(e) => onChange(e)}
-            // required
+            required
           />
         </div>
         <div className='form-group'>

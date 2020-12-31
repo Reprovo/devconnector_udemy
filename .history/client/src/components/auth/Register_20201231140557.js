@@ -5,7 +5,7 @@ import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
 
-export const Register = ({ setAlert, register }) => {
+export const Register = ({ setAlert }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +23,7 @@ export const Register = ({ setAlert, register }) => {
     if (password !== password2) {
       setAlert('Passwords do not match', 'danger');
     } else {
-      register({ name, email, password });
+      console.log('SUCCESS');
     }
   };
 
@@ -42,7 +42,7 @@ export const Register = ({ setAlert, register }) => {
             name='name'
             value={name}
             onChange={(e) => onChange(e)}
-            // required
+            required
           />
         </div>
         <div className='form-group'>
@@ -90,7 +90,6 @@ export const Register = ({ setAlert, register }) => {
 
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  register: PropTypes.func.isRequired,
 };
 
-export default connect(null, { setAlert, register })(Register);
+export default connect(null, { setAlert })(Register);

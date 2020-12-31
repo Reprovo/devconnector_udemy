@@ -23,7 +23,7 @@ export const Register = ({ setAlert, register }) => {
     if (password !== password2) {
       setAlert('Passwords do not match', 'danger');
     } else {
-      register({ name, email, password });
+      console.log('SUCCESS');
     }
   };
 
@@ -42,7 +42,7 @@ export const Register = ({ setAlert, register }) => {
             name='name'
             value={name}
             onChange={(e) => onChange(e)}
-            // required
+            required
           />
         </div>
         <div className='form-group'>
